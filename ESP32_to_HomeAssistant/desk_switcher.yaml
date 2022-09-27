@@ -7,7 +7,8 @@ esphome:
   name: desk-switcher
 
 esp32:
-  board: esp-wrover-kit
+  # board: esp-wrover-kit
+  board: lolin_d32_pro
   framework:
     type: arduino
 
@@ -24,6 +25,70 @@ ota:
 web_server:
   port: 80
     
+packages: # These allow merging whereas global includes do not
+  wifi: !include ../secrets/wifi.yaml 
+
+# comms interfaces go here ----------------------------------------------
+
+# for ESP32 boards, the following are available:
+#   - uart
+#   - spi
+#   - i2c
+#   - canbus
+#   - gpio
+#   - pwm
+
+# esp32 spi pins are as follows:
+#   - MOSI: 23
+#   - MISO: 19
+#   - SCLK: 18
+#   - SS: 5
+# or 
+#   - MOSI: 13
+#   - MISO: 12
+#   - SCLK: 14
+#   - SS: 15
+
+spi:
+  clk_pin: 14
+  mosi_pin: 13
+  miso_pin: 12
+
+# esp32 i2c pins are as follows:
+#   - SDA: 21
+#   - SCL: 22
+
+i2c:
+  sda: 21
+  scl: 22
+
+
+# all sensors go below here ---------------------------------------------
+
+# sensor:
+#   - platform: pulse_width
+#     pin: D0
+#     name: Pulse Width Sensor
+#   - platform: uptime
+#     name: Uptime Sensor
+#     id: uptime_sensor
+#     update_interval: 30min
+
+# DAC convert for ESP32 module
+output:
+  - platform: esp32_dac
+    pin: 25
+    id: dac_output
+
+# outputs always need to be used, so we set them using a "light" so we 
+# have access in Home Assistant Dashboard
+light:
+  - platform: monochromatic
+    output: dac_output
+    name: "DAC Test"
+    gamma_correct: 1.0 # to make sure output scales linear with voltage
+    default_transition_length: 0s
+
 switch:
   - platform: gpio
     name: "Example Red LED"
@@ -35,7 +100,18 @@ switch:
     name: "Example Blue LED"
     pin: 4
 
-packages: # These allow merging whereas global includes do not
-  wifi: !include ../secrets/wifi.yaml 
+# Example configuration entry
+font:
+  - file: "gfonts://Roboto"
+    id: roboto
+    size: 20
 
-# !include secrets/wifi.yaml 
+    
+
+display:
+  - platform: ssd1327_i2c
+    model: "SSD1327 128x128"
+    # address: 0x78 
+    address: 0x3C # 078 >> 1
+    lambda: |-
+      it.print(0, 0, id(roboto), "Hello World!");
