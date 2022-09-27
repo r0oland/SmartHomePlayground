@@ -1,0 +1,41 @@
+substitutions:
+  wifi_fast_connect: "false"
+  # connects to the first network the ESP sees, even if that network is very far
+  # away and better ones are available.
+
+esphome:
+  name: desk-switcher
+
+esp32:
+  board: esp-wrover-kit
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  password: ""
+
+web_server:
+  port: 80
+    
+switch:
+  - platform: gpio
+    name: "Example Red LED"
+    pin: 0
+  - platform: gpio
+    name: "Example Green LED"
+    pin: 2
+  - platform: gpio
+    name: "Example Blue LED"
+    pin: 4
+
+packages: # These allow merging whereas global includes do not
+  wifi: !include ../secrets/wifi.yaml 
+
+# !include secrets/wifi.yaml 

@@ -1,0 +1,13 @@
+{
+  "storage_version": 1,
+  "name": "desk_switcher",
+  "comment": null,
+  "esphome_version": "2022.9.1",
+  "src_version": 1,
+  "address": "desk_switcher.local",
+  "web_port": null,
+  "esp_platform": "ESP32",
+  "build_path": null,
+  "firmware_bin_path": null,
+  "loaded_integrations": []
+}
