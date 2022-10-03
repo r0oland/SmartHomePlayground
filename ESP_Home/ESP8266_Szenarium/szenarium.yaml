@@ -1,0 +1,99 @@
+substitutions:
+  wifi_fast_connect: "false"
+  # connects to the first network the ESP sees, even if that network is very far
+  # away and better ones are available.
+
+packages: # These allow merging whereas global includes do not
+  wifi: !include ../../secrets/wifi.yaml 
+
+esphome:
+    name: terra
+  
+esp8266:
+  board: d1_mini
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  password: ""
+
+i2c:
+  # use default HW pins 
+  # sda: 21 
+  # scl: 22
+  scan: false
+
+
+# sensors =====================================================
+sensor:
+  - platform: htu21d
+    temperature:
+      name: "TerraTemp"
+      id: TerraTemp
+      filters:
+        - sliding_window_moving_average:
+            window_size: 10
+            send_every: 60
+    humidity:
+      name: "TerraHumid"
+      id: TerraHumid
+      filters:
+        - sliding_window_moving_average:
+            window_size: 10
+            send_every: 60
+    update_interval: 10s
+
+
+# display and font stuff =====================================================
+font:
+  - file: "Raleway-Medium.ttf"
+    id: ral_med_15
+    size: 15
+  - file: "Raleway-Medium.ttf"
+    id: ral_med_20
+    size: 20
+
+graph:
+  # Show bare-minimum auto-ranged graph
+  - id: tempGraph
+    sensor: TerraTemp
+    duration: 12h
+    width: 60
+    height: 40
+    x_grid: 2h
+    border: true
+  - id: humidGraph
+    sensor: TerraHumid
+    duration: 12h
+    width: 60
+    height: 40
+    x_grid: 2h
+    border: true
+
+display:
+  - platform: ssd1306_i2c
+    id: the_display
+    model: "SH1106 128x64"
+    address: 0x3C # default is 0x3C
+    update_interval: 30s # don't make too high or WIFI will be affected...
+    pages:
+    - id: page1
+      lambda: |-
+        it.printf(0, 0, id(ral_med_20), "%.1f C", id(TerraTemp).raw_state);
+        it.printf(64, 0, id(ral_med_20), "%.1f %%", id(TerraHumid).raw_state);
+        it.graph(0, 24, id(tempGraph));
+        it.graph(64, 24, id(humidGraph));
+
+# Example configuration entry
+light:
+  - platform: neopixelbus
+    type: GRB
+    variant: WS2813
+    pin: D5
+    num_leds: 120
+    name: "NeoPixel Light"

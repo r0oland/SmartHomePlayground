@@ -1,0 +1,115 @@
+substitutions:
+  wifi_fast_connect: "false"
+  # connects to the first network the ESP sees, even if that network is very far
+  # away and better ones are available.
+
+esphome:
+  name: desk-switcher
+
+esp32:
+  platform: ESP8266
+  board: d1_mini
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  password: ""
+
+web_server:
+  port: 80
+    
+packages: # These allow merging whereas global includes do not
+  wifi: !include ../../secrets/wifi.yaml 
+
+# comms interfaces go here ----------------------------------------------
+# for esp8266 the following are available:
+#   - uart
+#   - spi
+#   - i2c
+#   - canbus
+#   - gpio
+#   - pwm
+
+# pwm pins are as follows:
+#   - D1: 5
+#   - D2: 4
+#   - D3: 0
+#   - D4: 2
+#   - D5: 14
+#   - D6: 12
+#   - D7: 13
+#   - D8: 15
+#   - D9: 3
+#   - D10: 1
+
+# esp8266 spi pins are as follows:
+#   - MOSI: 13
+#   - MISO: 12
+#   - SCLK: 14
+#   - SS: 15
+
+# ESP8266 only supports software PWM, but that's good enough for us
+output:
+  - platform: esp8266_pwm
+    pin: D1
+    frequency: 100 Hz
+    id: pwm_output
+
+# Example usage in a light
+light:
+  - platform: monochromatic
+    output: pwm_output
+    name: "analog_gauge"
+
+# all sensors go below here ---------------------------------------------
+
+# sensor:
+#   - platform: pulse_width
+#     pin: D0
+#     name: Pulse Width Sensor
+
+# DAC convert for ESP32 module
+# output:
+#   - platform: esp32_dac
+#     pin: 25
+#     id: dac_output
+
+# outputs always need to be used, so we set them using a "light" so we 
+# have access in Home Assistant Dashboard
+# light:
+#   - platform: monochromatic
+#     output: dac_output
+#     name: "DAC Test"
+#     gamma_correct: 1.0 # to make sure output scales linear with voltage
+#     default_transition_length: 0s
+
+# switch:
+#   - platform: gpio
+#     name: "Example Red LED"
+#     pin: 0
+#   - platform: gpio
+#     name: "Example Green LED"
+#     pin: 2
+#   - platform: gpio
+#     name: "Example Blue LED"
+#     pin: 4
+
+# Example configuration entry
+# font:
+#   - file: "gfonts://Roboto"
+#     id: roboto
+#     size: 20
+    
+
+# display:
+#   - platform: ssd1327_i2c
+#     model: "SSD1327 128x128"
+#     # address: 0x78 
+#     address: 0x3C # 078 >> 1
+#     lambda: |-
+#       it.print(0, 0, id(roboto), "Hello World!");

@@ -1,0 +1,125 @@
+substitutions:
+  wifi_fast_connect: "false"
+  # connects to the first network the ESP sees, even if that network is very far
+  # away and better ones are available.
+
+packages: # These allow merging whereas global includes do not
+  wifi: !include ../../secrets/wifi.yaml 
+
+esphome:
+  name: deskjockey
+  
+esp8266:
+  board: d1_mini
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  password: ""
+
+# comms interfaces go here ===================================================
+# for esp8266 the following are available:
+#   - uart
+#   - spi
+#   - i2c
+#   - canbus
+#   - gpio
+#   - pwm
+
+# pwm pins are as follows:
+#   - D1: 5
+#   - D2: 4
+#   - D3: 0
+#   - D4: 2
+#   - D5: 14
+#   - D6: 12
+#   - D7: 13
+#   - D8: 15
+#   - D9: 3
+#   - D10: 1
+
+# esp8266 spi pins are as follows:
+#   - MOSI: 13
+#   - MISO: 12
+#   - SCLK: 14
+#   - SS: 15
+
+i2c:
+  # use default HW pins 
+  # sda: 21 
+  # scl: 22
+  scan: false
+
+# sensors / inputs ===========================================================
+
+# outputs ====================================================================
+
+# ESP8266 only supports software PWM, but that's good enough for us
+output:
+  - platform: esp8266_pwm
+    pin: D1
+    frequency: 1000 Hz
+    id: pwm_output
+
+# Example usage in a light
+light:
+  - platform: monochromatic
+    output: pwm_output
+    name: "analog_gauge"
+    gamma_correct: 1.0 # to make sure output scales linear with voltage
+    default_transition_length: 0s
+
+# for PWM to analog gauge, we need to create 1 mA current at 3.3V
+# we thus need a resistor of 3.3V / 0.001A = 3.3kOhm
+
+# display and font stuff =====================================================
+
+# font:
+#   - file: "gfonts://Roboto"
+#     id: roboto
+#     size: 20
+
+# font:
+#   - file: "Raleway-Medium.ttf"
+#     id: ral_med_15
+#     size: 15
+#   - file: "Raleway-Medium.ttf"
+#     id: ral_med_20
+#     size: 20
+
+# graph:
+#   # Show bare-minimum auto-ranged graph
+#   - id: tempGraph
+#     sensor: TerraTemp
+#     duration: 12h
+#     width: 60
+#     height: 40
+#     x_grid: 2h
+#     border: true
+#   - id: humidGraph
+#     sensor: TerraHumid
+#     duration: 12h
+#     width: 60
+#     height: 40
+#     x_grid: 2h
+#     border: true
+
+# display:
+#   - platform: ssd1306_i2c
+#     id: the_display
+#     model: "SH1106 128x64"
+#     address: 0x3C # default is 0x3C
+#     update_interval: 30s # don't make too high or WIFI will be affected...
+#     pages:
+#     - id: page1
+#       lambda: |-
+#         it.printf(0, 0, id(ral_med_20), "%.1f C", id(TerraTemp).raw_state);
+#         it.printf(64, 0, id(ral_med_20), "%.1f %%", id(TerraHumid).raw_state);
+#         it.graph(0, 24, id(tempGraph));
+#         it.graph(64, 24, id(humidGraph));
+
