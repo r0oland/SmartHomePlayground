@@ -9,8 +9,13 @@ packages: # These allow merging whereas global includes do not
 esphome:
   name: deskjockey
   
-esp8266:
-  board: d1_mini
+esp32:
+  board: lolin_d32_pro
+  framework:
+    type: arduino
+
+# esp8266:
+#   board: d1_mini
 
 # Enable logging
 logger:
@@ -59,18 +64,43 @@ i2c:
 
 # outputs ====================================================================
 
-# ESP8266 only supports software PWM, but that's good enough for us
+# Example configuration entry
 output:
-  - platform: esp8266_pwm
-    pin: D1
-    frequency: 1000 Hz
-    id: pwm_output
+  - platform: ledc
+    pin: GPIO26
+    id: pwm_gauge_01
+
+  - platform: ledc
+    pin: GPIO25
+    id: pwm_gauge_02
+
+  - platform: ledc
+    pin: GPIO33
+    id: pwm_gauge_03
+
+# Example configuration entry
+fan:
+  - platform: speed
+    output: pwm_gauge_01
+    name: "fan_pwm_gauge_01"
 
 # Example usage in a light
+  # - platform: monochromatic
+  #   output: fan_pwm_gauge_01
+  #   name: "fan_pwm_gauge_01"
+  #   gamma_correct: 1.0 # to make sure output scales linear with voltage
+  #   default_transition_length: 0s
+
 light:
   - platform: monochromatic
-    output: pwm_output
-    name: "analog_gauge"
+    output: pwm_gauge_02
+    name: "pwm_gauge_02"
+    gamma_correct: 1.0 # to make sure output scales linear with voltage
+    default_transition_length: 0s
+
+  - platform: monochromatic
+    output: pwm_gauge_03
+    name: "pwm_gauge_03"
     gamma_correct: 1.0 # to make sure output scales linear with voltage
     default_transition_length: 0s
 

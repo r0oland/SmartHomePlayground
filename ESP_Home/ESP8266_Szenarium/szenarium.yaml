@@ -32,28 +32,25 @@ i2c:
 # sensors =====================================================
 sensor:
   - platform: htu21d
+    update_interval: 15s
     temperature:
       name: "TerraTemp"
       id: TerraTemp
       filters:
         - sliding_window_moving_average:
-            window_size: 10
+            window_size: 15
             send_every: 60
     humidity:
       name: "TerraHumid"
       id: TerraHumid
       filters:
         - sliding_window_moving_average:
-            window_size: 10
+            window_size: 15
             send_every: 60
-    update_interval: 10s
 
 
 # display and font stuff =====================================================
 font:
-  - file: "Raleway-Medium.ttf"
-    id: ral_med_15
-    size: 15
   - file: "Raleway-Medium.ttf"
     id: ral_med_20
     size: 20
@@ -62,14 +59,14 @@ graph:
   # Show bare-minimum auto-ranged graph
   - id: tempGraph
     sensor: TerraTemp
-    duration: 12h
+    duration: 6h
     width: 60
     height: 40
     x_grid: 2h
     border: true
   - id: humidGraph
     sensor: TerraHumid
-    duration: 12h
+    duration: 6h
     width: 60
     height: 40
     x_grid: 2h

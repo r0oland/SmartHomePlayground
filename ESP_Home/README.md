@@ -25,10 +25,10 @@ Check for working esp home:
 `esphome version`
 
 Update to latest version
-- `conda upgrade conda`
+- `conda upgrade conda -y`
 - `conda activate esp32`
-- `mamba upgrade --all`
-- `pip3 install -U esphome`
+- `mamba upgrade --all -y`
+- `pip3 install -U esphome -y`
 
 See [also here](https://esphome.io/guides/installing_esphome.html) for other platforms etc.
 
