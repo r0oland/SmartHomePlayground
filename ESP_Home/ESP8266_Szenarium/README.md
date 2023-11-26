@@ -3,9 +3,9 @@
 ## Functionality
 
 - check temperature and humidity
-- control RGB LED strip 
+- control RGB LED strip
 
-## Install 
+## Install
 
 Get Raleway font from Google:
 

@@ -7,7 +7,7 @@ packages: # These allow merging whereas global includes do not
   wifi: !include ../../secrets/wifi.yaml 
 
 esphome:
-    name: terra
+  name: terra
   
 esp8266:
   board: d1_mini
@@ -28,6 +28,8 @@ i2c:
   # scl: 22
   scan: false
 
+dallas:
+  - pin: D6
 
 # sensors =====================================================
 sensor:
@@ -47,30 +49,41 @@ sensor:
         - sliding_window_moving_average:
             window_size: 15
             send_every: 60
-
+  - platform: dallas
+    address: 0xbb0317248403ff28
+    name: "Soil Temperature"
+    id: SoilTemp
 
 # display and font stuff =====================================================
+time:
+  - platform: sntp
+    id: thisTime
+
 font:
-  - file: "Raleway-Medium.ttf"
+  # gfonts://family[@weight]
+  - file: "gfonts://Raleway@medium"
     id: ral_med_20
     size: 20
+  - file: "gfonts://Raleway@medium"
+    id: ral_med_15
+    size: 15
 
-graph:
-  # Show bare-minimum auto-ranged graph
-  - id: tempGraph
-    sensor: TerraTemp
-    duration: 6h
-    width: 60
-    height: 40
-    x_grid: 2h
-    border: true
-  - id: humidGraph
-    sensor: TerraHumid
-    duration: 6h
-    width: 60
-    height: 40
-    x_grid: 2h
-    border: true
+# graph:
+#   # Show bare-minimum auto-ranged graph
+#   - id: tempGraph
+#     sensor: TerraTemp
+#     duration: 6h
+#     width: 60
+#     height: 40
+#     x_grid: 2h
+#     border: true
+#   - id: humidGraph
+#     sensor: TerraHumid
+#     duration: 6h
+#     width: 60
+#     height: 40
+#     x_grid: 2h
+#     border: true
 
 display:
   - platform: ssd1306_i2c
@@ -81,10 +94,11 @@ display:
     pages:
     - id: page1
       lambda: |-
-        it.printf(0, 0, id(ral_med_20), "%.1f C", id(TerraTemp).raw_state);
-        it.printf(64, 0, id(ral_med_20), "%.1f %%", id(TerraHumid).raw_state);
-        it.graph(0, 24, id(tempGraph));
-        it.graph(64, 24, id(humidGraph));
+        it.strftime(0, 0, id(ral_med_15), "%Y-%m-%d", id(thisTime).now());
+        it.strftime(0, 16, id(ral_med_15), "%H:%M", id(thisTime).now());
+        it.printf(64, 20, id(ral_med_20), "%.1f C", id(SoilTemp).raw_state);
+        it.printf(0, 40, id(ral_med_20), "%.1f C", id(TerraTemp).raw_state);
+        it.printf(64, 40, id(ral_med_20), "%.1f %%", id(TerraHumid).raw_state);
 
 # Example configuration entry
 light:
