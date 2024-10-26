@@ -1,0 +1,11 @@
+name: ha
+channels:
+  - conda-forge
+dependencies:
+  - numpy
+  - pandas
+  - matplotlib
+  - pyserial
+  - jupyter
+  - pip:
+      - esphome

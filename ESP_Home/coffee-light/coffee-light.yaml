@@ -1,0 +1,27 @@
+substitutions:
+  wifi_fast_connect: "false"
+  # connects to the first network the ESP sees, even if that network is very far
+  # away and better ones are available.
+
+packages: # These allow merging whereas global includes do not
+  wifi: !include ../../secrets/wifi.yaml 
+
+esphome:
+  name: coffee-light
+
+esp8266:
+  board: d1_mini
+
+logger:
+  level: DEBUG
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  - platform: esphome
+    password: ""
+
+captive_portal:
+    
