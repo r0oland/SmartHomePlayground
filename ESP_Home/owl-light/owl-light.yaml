@@ -7,7 +7,7 @@ packages: # These allow merging whereas global includes do not
   wifi: !include ../../secrets/wifi.yaml 
 
 esphome:
-  name: coffee-light
+  name: owl-light
 
 esp8266:
   board: d1_mini
@@ -24,20 +24,12 @@ ota:
     password: ""
 
 captive_portal:
-
+    
 light:
 - platform: neopixelbus
   type: GRB
   variant: WS2811
   pin: GPIO00
-  num_leds: 89
-  name: "Coffee Light"
-  id: coffee_light
-  restore_mode: RESTORE_DEFAULT_ON
-  on_turn_on:
-    then:
-      - light.turn_on:
-          id: coffee_light
-          red: 100%
-          green: 0%
-          blue: 0%
+  num_leds: 61
+  name: "Owl Light"
+  
