@@ -23,12 +23,12 @@ captive_portal:
 
 light:
 - platform: neopixelbus
+  id: bed_light_joe
   type: GRB
   variant: WS2811
-  pin: GPIO00
-  num_leds: 89
+  pin: GPIO04
+  num_leds: 44
   name: "Bed Light Joe"
-  id: bed_light_joe
   restore_mode: RESTORE_DEFAULT_ON
   on_turn_on:
     then:
@@ -37,39 +37,22 @@ light:
           red: 25%
           green: 25%
           blue: 50%
-  effects:
-    - addressable_rainbow:
-        name: "Rainbow"
-        speed: 10
-        width: 5
-    - addressable_color_wipe:
-        name: "Color Wipe"
-        colors:
-          - red: 100%
-            green: 0%
-            blue: 0%
-            num_leds: 89
-          - red: 0%
-            green: 100%
-            blue: 0%
-            num_leds: 89
-          - red: 0%
-            green: 0%
-            blue: 100%
-            num_leds: 89
-    - addressable_twinkle:
-        name: "Twinkle"
-        twinkle_probability: 5%
-    - addressable_fireworks:
-        name: "Fireworks"
-        update_interval: 32ms
-        spark_probability: 10%
-    - addressable_scan:
-        name: "Scan"
-        move_interval: 100ms
-    - addressable_flicker:
-        name: "Flicker"
-        intensity: 25%
+
+- platform: neopixelbus
+  id: bed_light_steffi
+  type: GRB
+  variant: WS2811
+  pin: GPIO05
+  name: "Bed Light Steffi"
+  num_leds: 44
+  restore_mode: RESTORE_DEFAULT_ON
+  on_turn_on:
+    then:
+      - light.turn_on:
+          id: bed_light_joe
+          red: 25%
+          green: 25%
+          blue: 50%
 
 # Enable Home Assistant API
 api:

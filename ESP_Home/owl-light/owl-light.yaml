@@ -29,7 +29,7 @@ light:
 - platform: neopixelbus
   type: GRB
   variant: WS2811
-  pin: GPIO00
-  num_leds: 61
+  pin: GPIO04
+  num_leds: 44
   name: "Owl Light"
   

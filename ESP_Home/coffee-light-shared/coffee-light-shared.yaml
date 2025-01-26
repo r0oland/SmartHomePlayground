@@ -3,13 +3,17 @@ substitutions:
   # connects to the first network the ESP sees, even if that network is very far
   # away and better ones are available.
 
-packages: # These allow merging whereas global includes do not
-  wifi: !include ../../secrets/wifi.yaml 
+wifi:
+  # Set up a wifi access point
+  ap:
+    password: "12345678"
 
-
+# In combination with the `ap` this allows the user
+# to provision wifi credentials to the device.
+captive_portal:
 
 esphome:
-  name: coffee-light
+  name: coffee-light-shared
 
 esp8266:
   board: d1_mini
@@ -21,24 +25,14 @@ ota:
   - platform: esphome
     password: ""
 
-captive_portal:
-
 light:
 - platform: neopixelbus
   type: GRB
-  variant: WS2811
-  pin: GPIO00
+  variant: 800KBPS
+  pin: GPIO00 #D3
   num_leds: 89
-  name: "Coffee Light"
-  id: coffee_light
-  # restore_mode: RESTORE_DEFAULT_ON
-  on_turn_on:
-    then:
-      - light.turn_on:
-          id: coffee_light
-          red: 50%
-          green: 0%
-          blue: 0%
+  name: "Coffee Light Shared"
+  id: coffee_light_shared
   effects:
     - addressable_rainbow:
         name: "Rainbow"
